@@ -2,6 +2,7 @@
 import { getUserTasks, useGetUserSession } from "@/actions/DashBoardActions";
 import { Header } from "@/components/Header";
 import { TaskCard } from "@/components/TaskCard";
+import { TaskForm } from "@/components/TaskForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -12,6 +13,7 @@ import {
     Search,
     Filter,
   } from 'lucide-react';
+import { useState } from "react";
 
 
 
@@ -24,12 +26,12 @@ export interface Task {
     updated_at: string
 }
 export default function Dashboard() {
+    const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
 
-    const { data: tasks } = useQuery({
+    const { data: tasks, refetch: refetchTasks } = useQuery({
         queryKey: ['tasks'],
         queryFn: () => getUserTasks(useGetUserSession().email)
     });
-
 
     // console.log(tasks)
 
@@ -75,7 +77,7 @@ export default function Dashboard() {
 
                     <Button
 
-                        // onClick={() => setIsTaskFormOpen(true)}
+                        onClick={() => setIsTaskFormOpen(true)}
                         className="cursor-pointer"
                     >
                         <Plus className="h-4 w-4 mr-2" />
@@ -84,10 +86,15 @@ export default function Dashboard() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {tasks?.map((task: Task) => (
-                        <TaskCard key={task.id} task={task} />
+                        <TaskCard key={task.id} task={task} refetchTasks={refetchTasks}/>
                     ))}
                 </div>
             </div>
+            <TaskForm
+                isOpen={isTaskFormOpen}
+                onClose={() => setIsTaskFormOpen(false)}
+                refetchTasks={refetchTasks}
+            />
         </div>
     );
 }
