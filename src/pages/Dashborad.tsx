@@ -12,8 +12,8 @@ import {
     Plus,
     Search,
     Filter,
-  } from 'lucide-react';
-import { useState } from "react";
+} from 'lucide-react';
+import { useEffect, useState } from "react";
 
 
 
@@ -28,12 +28,37 @@ export interface Task {
 export default function Dashboard() {
     const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+    const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'not-done'>('all');
+    const [tasksPerPage, setTasksPerPage] = useState(6);
+    const [currentPage, setCurrentPage] = useState(1);
 
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
         queryKey: ['tasks'],
         queryFn: () => getUserTasks(useGetUserSession().email)
     });
+
+    useEffect(() => {
+        let filtered = tasks;
+
+        if (searchTerm) {
+            filtered = filtered.filter((task: Task) =>
+                task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                task.description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        if (statusFilter !== 'all') {
+            filtered = filtered.filter((task: Task) =>
+                statusFilter === 'done' ? task.is_done : !task.is_done
+            );
+        }
+
+        setFilteredTasks(filtered);
+        setCurrentPage(1);
+    }, [tasks, searchTerm, statusFilter]);
 
 
     const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any) => {
@@ -66,14 +91,14 @@ export default function Dashboard() {
     const handleEditTask = (task: Task) => {
         setEditingTask(task);
         setIsTaskFormOpen(true);
-      };
+    };
 
 
     const handleUpdateTask = async (title: string, description: string) => {
         if (!editingTask) return;
 
         try {
-            const  response = await fetch(`http://localhost:8000/api/v1/update_task_infos`, {
+            const response = await fetch(`http://localhost:8000/api/v1/update_task_infos`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,8 +121,10 @@ export default function Dashboard() {
             console.error('Error updating task:', error);
         }
 
-      };
-
+    };
+    const indexOfLastTask = currentPage * tasksPerPage;
+    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
+    const currentTasks = filteredTasks?.slice(indexOfFirstTask, indexOfLastTask);
     return (
         <div className="w-full flex flex-col items-center">
             <div className="w-1/2 flex flex-col">
@@ -109,13 +136,13 @@ export default function Dashboard() {
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search tasks..."
-                            // value={searchTerm}
-                            // onChange={(e) => setSearchTerm(e.target.value)}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10"
                         />
                     </div>
                     <div>
-                        <Select>
+                        <Select  value={statusFilter} onValueChange={(value: 'all' | 'done' | 'not-done') => setStatusFilter(value)}>
                             <SelectTrigger className="w-[180px] cursor-pointer">
                                 <Filter className="h-4 w-4 mr-2" />
                                 <SelectValue placeholder="Filtros" />
@@ -123,7 +150,7 @@ export default function Dashboard() {
                             <SelectContent className="">
                                 <SelectGroup className="">
                                     <SelectLabel>Filtros</SelectLabel>
-                                    <SelectItem className="cursor-pointer" value="Todos">
+                                    <SelectItem className="cursor-pointer" value="all">
                                         Todos
                                     </SelectItem>
                                     <SelectItem className="cursor-pointer" value="done">
@@ -148,14 +175,14 @@ export default function Dashboard() {
                     </Button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    {tasks?.map((task: Task) => (
-                        <TaskCard handleEditTask={handleEditTask} key={task.id} task={task} refetchTasks={refetchTasks}/>
+                    {currentTasks?.map((task: Task) => (
+                        <TaskCard handleEditTask={handleEditTask} key={task.id} task={task} refetchTasks={refetchTasks} />
                     ))}
                 </div>
             </div>
             <TaskForm
                 isOpen={isTaskFormOpen}
-                onClose={() => {setIsTaskFormOpen(false), setEditingTask(null)}}
+                onClose={() => { setIsTaskFormOpen(false), setEditingTask(null) }}
                 createTaskSubmit={handleCreateTask}
                 updateTaskSubmit={handleUpdateTask}
                 editingTask={editingTask}
