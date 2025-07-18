@@ -7,10 +7,30 @@ import type { Task } from "@/pages/Dashborad";
 
 export interface TaskCardProps {
     task: Task;
+    refetchTasks: () => void
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, refetchTasks }: TaskCardProps) {
 
+    const handleToggleComplete = async (taskId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/v1/update_task_status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    task_id: taskId,
+                    status: !task.is_done,
+                }),
+            });
+            if (response.ok) {
+                refetchTasks();
+            }
+        } catch (error) {
+            console.error('Erro ao marcar a tarefa como concluida:', error);
+        }
+    }
 
     return (
         <Card key={task.id} className="hover:shadow-medium transition-all duration-200 animate-fade-in max-w-[357px]">
@@ -20,7 +40,7 @@ export function TaskCard({ task }: TaskCardProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            // onClick={() => handleToggleComplete(task.id)}
+                            onClick={() => handleToggleComplete(task.id)}
                             className="p-1 h-6 w-6"
                         >
                             {task.is_done ? (
@@ -53,13 +73,15 @@ export function TaskCard({ task }: TaskCardProps) {
                     </div>
                 </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="w-full h-full flex flex-col">
                 <h3 className={`font-semibold mb-2 ${task.is_done ? 'line-through text-muted-foreground' : ''}`}>
                     {task.title}
                 </h3>
-                <p className={`text-sm text-muted-foreground mb-3 ${task.is_done ? 'line-through' : ''}`}>
-                    {task.description}
-                </p>
+                <div className="h-full w-full">
+                    <p className={`break-words text-sm text-muted-foreground mb-3 ${task.is_done ? 'line-through' : ''}`}>
+                        {task.description}
+                    </p>
+                </div>
                 <div className="flex flex-col text-xs text-muted-foreground">
                     <span className="font-semibold">
                         Criado em: {new Date(task.created_at).toLocaleString()}
