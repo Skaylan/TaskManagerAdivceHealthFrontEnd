@@ -10,5 +10,5 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const token = Cookies.get('token');
 
   const isAuthenticated = !!token;
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <>{children}</> : <Navigate to="/" replace />;
 };

@@ -33,7 +33,8 @@ export function LoginForm() {
         const res = await callAuthenticationApiRoute(email, password)
         if (res.token) {
             Cookies.set('token', res.token)
-            // window.location.href = '/'
+            Cookies.set('session', JSON.stringify(res.user))
+            window.location.href = '/dashboard'
         }
     }
 
