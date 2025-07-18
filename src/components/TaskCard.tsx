@@ -33,6 +33,25 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
         }
     }
 
+    const handleDeleteTask = async (taskId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8000/api/v1/delete_task`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    task_id: taskId,
+                }),
+            });
+            if (response.ok) {
+                refetchTasks();
+            }
+        } catch (error) {
+            console.error('Erro ao deletar a tarefa:', error);
+        }
+    }
+
     return (
         <Card key={task.id} className="hover:shadow-medium transition-all duration-200 animate-fade-in max-w-[357px]">
             <CardHeader className="pb-3">
@@ -66,7 +85,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
                         <Button
                             variant="ghost"
                             size="sm"
-                            // onClick={() => handleDeleteTask(task.id)}
+                            onClick={() => handleDeleteTask(task.id)}
                             className="p-1 h-6 w-   6 text-destructive hover:text-destructive"
                         >
                             <Trash2 className="h-3 w-3" />
