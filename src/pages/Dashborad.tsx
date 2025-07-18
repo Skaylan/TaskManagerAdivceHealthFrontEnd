@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 import {
     Plus,
     Search,
@@ -27,13 +27,76 @@ export interface Task {
 }
 export default function Dashboard() {
     const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState<Task | null>(null);
+
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
         queryKey: ['tasks'],
         queryFn: () => getUserTasks(useGetUserSession().email)
     });
 
-    // console.log(tasks)
+
+    const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any) => {
+        e.preventDefault();
+        if (!title.trim()) return;
+
+        const response = await fetch('http://localhost:8000/api/v1/add_task', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${Cookies.get('token')}`
+            },
+            body: JSON.stringify({
+                user_id: session?.id,
+                title: title,
+                description: description
+            }),
+        });
+
+        if (response.ok) {
+            console.log('Task created successfully');
+            refetchTasks();
+            setIsTaskFormOpen(false);
+        } else {
+            console.error('Failed to create task');
+        }
+
+        // Reset form
+    };
+    const handleEditTask = (task: Task) => {
+        setEditingTask(task);
+        setIsTaskFormOpen(true);
+      };
+
+
+    const handleUpdateTask = async (title: string, description: string) => {
+        if (!editingTask) return;
+
+        try {
+            const  response = await fetch(`http://localhost:8000/api/v1/update_task_infos`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    task_id: editingTask.id,
+                    title: title,
+                    description: description
+                }),
+            })
+
+            if (response.ok) {
+                console.log('Task updated successfully');
+                refetchTasks();
+                setEditingTask(null);
+            }
+
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
+
+      };
 
     return (
         <div className="w-full flex flex-col items-center">
@@ -86,14 +149,16 @@ export default function Dashboard() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {tasks?.map((task: Task) => (
-                        <TaskCard key={task.id} task={task} refetchTasks={refetchTasks}/>
+                        <TaskCard handleEditTask={handleEditTask} key={task.id} task={task} refetchTasks={refetchTasks}/>
                     ))}
                 </div>
             </div>
             <TaskForm
                 isOpen={isTaskFormOpen}
-                onClose={() => setIsTaskFormOpen(false)}
-                refetchTasks={refetchTasks}
+                onClose={() => {setIsTaskFormOpen(false), setEditingTask(null)}}
+                createTaskSubmit={handleCreateTask}
+                updateTaskSubmit={handleUpdateTask}
+                editingTask={editingTask}
             />
         </div>
     );

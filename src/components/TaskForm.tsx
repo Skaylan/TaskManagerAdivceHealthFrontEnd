@@ -1,62 +1,65 @@
-import { use, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Save, X } from 'lucide-react';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import { useGetUserSession } from '@/actions/DashBoardActions';
+import type { Task } from '@/pages/Dashborad';
+
+
 
 interface TaskFormProps {
     isOpen: boolean;
     onClose: () => void;
-    refetchTasks: () => void;
+    createTaskSubmit: (e: React.FormEvent, title: string, description: string, session: any) => void;
+    updateTaskSubmit: (title: string, description: string, session: any) => void
+    editingTask: Task | null
 }
 
-export const TaskForm = ({ isOpen, onClose, refetchTasks }: TaskFormProps) => {
+export const TaskForm = ({
+    isOpen,
+    onClose,
+    createTaskSubmit,
+    updateTaskSubmit,
+    editingTask
+}: TaskFormProps) => {
+
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [completed, setCompleted] = useState(false);
+    // const [completed, setCompleted] = useState(false);
     const session = useGetUserSession();
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!title.trim()) return;
-
-        const response = await fetch('http://localhost:8000/api/v1/add_task', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get('token')}`
-            },
-            body: JSON.stringify({
-                user_id: session?.id,
-                title,
-                description
-            }),
-        });
-
-        if (response.ok) {
-            console.log('Task created successfully');
-            refetchTasks();
-        } else {
-            console.error('Failed to create task');
-        }
-
-        // Reset form
-        setTitle('');
-        setDescription('');
-        setCompleted(false);
-        onClose();
-    };
 
     const handleClose = () => {
         setTitle('');
         setDescription('');
-        setCompleted(false);
+        // setCompleted(false);
         onClose();
     };
+
+    const handleSubmit = async (e: React.FormEvent, title: string, description: string, session: any) => {
+        if (editingTask) {
+            updateTaskSubmit(title, description, session);
+            return
+        }
+
+        createTaskSubmit(e, title, description, session);
+    }
+
+    useEffect(() => {
+        if (editingTask) {
+          setTitle(editingTask.title);
+          setDescription(editingTask.description);
+        //   setCompleted(initialData.completed);
+        } else {
+          setTitle('');
+          setDescription('');
+        //   setCompleted(false);
+        }
+      }, [editingTask, isOpen]);
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -67,7 +70,7 @@ export const TaskForm = ({ isOpen, onClose, refetchTasks }: TaskFormProps) => {
                     </DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={(e) => handleSubmit(e, title, description, session)} className="space-y-6">
                     <div className="space-y-2">
                         <Label htmlFor="title">Task Title</Label>
                         <Input

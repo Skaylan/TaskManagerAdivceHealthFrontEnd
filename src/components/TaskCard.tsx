@@ -8,9 +8,10 @@ import type { Task } from "@/pages/Dashborad";
 export interface TaskCardProps {
     task: Task;
     refetchTasks: () => void
+    handleEditTask: (task: Task) => void
 }
 
-export function TaskCard({ task, refetchTasks }: TaskCardProps) {
+export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) {
 
     const handleToggleComplete = async (taskId: number) => {
         try {
@@ -57,7 +58,7 @@ export function TaskCard({ task, refetchTasks }: TaskCardProps) {
                         <Button
                             variant="ghost"
                             size="sm"
-                            // onClick={() => handleEditTask(task)}
+                            onClick={() => handleEditTask(task)}
                             className="p-1 h-6 w-6"
                         >
                             <Edit className="h-3 w-3" />
