@@ -12,6 +12,8 @@ import {
     Plus,
     Search,
     Filter,
+    ChevronRight,
+    ChevronLeft,
 } from 'lucide-react';
 import { useEffect, useState } from "react";
 
@@ -33,16 +35,16 @@ export default function Dashboard() {
     const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'not-done'>('all');
     const [tasksPerPage, setTasksPerPage] = useState(6);
     const [currentPage, setCurrentPage] = useState(1);
-
+    const userSession = useGetUserSession();
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
-        queryKey: ['tasks'],
-        queryFn: () => getUserTasks(useGetUserSession().email)
+        queryKey: ['tasks', userSession.email, currentPage],
+        queryFn: () => getUserTasks(userSession.email, currentPage),
+        enabled: !!userSession.email
     });
 
     useEffect(() => {
-        let filtered = tasks;
-
+        let filtered = tasks?.tasks;
         if (searchTerm) {
             filtered = filtered.filter((task: Task) =>
                 task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,8 +59,9 @@ export default function Dashboard() {
         }
 
         setFilteredTasks(filtered);
-        setCurrentPage(1);
     }, [tasks, searchTerm, statusFilter]);
+
+
 
 
     const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any) => {
@@ -122,12 +125,12 @@ export default function Dashboard() {
         }
 
     };
-    const indexOfLastTask = currentPage * tasksPerPage;
-    const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-    const currentTasks = filteredTasks?.slice(indexOfFirstTask, indexOfLastTask);
+    const currentTasks = filteredTasks;
+    const totalPages = Math.ceil(tasks?.amount_of_tasks / tasksPerPage);
+
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="w-1/2 flex flex-col">
+            <div className="w-2/3 flex flex-col">
                 <div className="flex w-full">
                     <Header />
                 </div>
@@ -142,7 +145,7 @@ export default function Dashboard() {
                         />
                     </div>
                     <div>
-                        <Select  value={statusFilter} onValueChange={(value: 'all' | 'done' | 'not-done') => setStatusFilter(value)}>
+                        <Select value={statusFilter} onValueChange={(value: 'all' | 'done' | 'not-done') => setStatusFilter(value)}>
                             <SelectTrigger className="w-[180px] cursor-pointer">
                                 <Filter className="h-4 w-4 mr-2" />
                                 <SelectValue placeholder="Filtros" />
@@ -179,6 +182,47 @@ export default function Dashboard() {
                         <TaskCard handleEditTask={handleEditTask} key={task.id} task={task} refetchTasks={refetchTasks} />
                     ))}
                 </div>
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-between mt-4">
+                        <div className="text-sm text-muted-foreground">
+                            mostrando {(currentPage - 1) * tasksPerPage + 1} até {(currentPage - 1) * tasksPerPage + currentTasks?.length} de {tasks?.amount_of_tasks} tarefas
+                        </div>
+                        <div className="flex gap-2">
+                            <Button
+                                className="cursor-pointer"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </Button>
+                            <div className="flex items-center gap-1">
+                                {Array.from({ length: totalPages }, (_, i) => (
+                                    <Button
+
+                                        key={i + 1}
+                                        variant={currentPage === i + 1 ? "default" : "outline"}
+                                        size="sm"
+                                        onClick={() => setCurrentPage(i + 1)}
+                                        className="w-8 h-8 p-0 cursor-pointer"
+                                    >
+                                        {i + 1}
+                                    </Button>
+                                ))}
+                            </div>
+                            <Button
+                                className="cursor-pointer"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
             <TaskForm
                 isOpen={isTaskFormOpen}

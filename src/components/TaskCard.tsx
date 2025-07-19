@@ -53,7 +53,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
     }
 
     return (
-        <Card key={task.id} className="hover:shadow-medium transition-all duration-200 animate-fade-in max-w-[357px]">
+        <Card key={task.id} className="hover:shadow-medium transition-all duration-200 animate-fade-in max-w-[430px]">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="flex items-center gap-2">
