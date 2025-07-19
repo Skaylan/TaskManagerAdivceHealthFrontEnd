@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
 import type { Task } from "@/pages/Dashborad";
+import type { Category } from "@/actions/DashBoardActions";
 
 
 export interface TaskCardProps {
@@ -91,6 +92,14 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
                             <Trash2 className="h-3 w-3" />
                         </Button>
                     </div>
+                </div>
+                <div className="mt-2">
+                    {
+                        task.category.map((category: Category) => (
+                            <Badge className="min-h-6 flex items-center justify-center bg-blue-500 text-white" key={category.id}>{category.name}</Badge>
+
+                        ))
+                    }
                 </div>
             </CardHeader>
             <CardContent className="w-full h-full flex flex-col">

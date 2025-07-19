@@ -1,5 +1,5 @@
 // import { useGetUserInfo } from "@/actions/DashBoardActions";
-import { getUserTasks, useGetUserSession } from "@/actions/DashBoardActions";
+import { getUserCategories, getUserTasks, useGetUserSession, type Category } from "@/actions/DashBoardActions";
 import { Header } from "@/components/Header";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskForm } from "@/components/TaskForm";
@@ -24,6 +24,7 @@ export interface Task {
     title: string;
     description: string;
     is_done: boolean;
+    category: Category[];
     created_at: string;
     updated_at: string
 }
@@ -33,13 +34,20 @@ export default function Dashboard() {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
     const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'not-done'>('all');
+    const [categoryFilter, setCategoryFilter] = useState('all');
     const [tasksPerPage, setTasksPerPage] = useState(6);
     const [currentPage, setCurrentPage] = useState(1);
     const userSession = useGetUserSession();
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
-        queryKey: ['tasks', userSession.email, currentPage, statusFilter, searchTerm],
-        queryFn: () => getUserTasks(userSession.email, currentPage, statusFilter, searchTerm),
+        queryKey: ['tasks', userSession.email, currentPage, statusFilter, searchTerm, categoryFilter],
+        queryFn: () => getUserTasks(userSession.email, currentPage, statusFilter, searchTerm, categoryFilter),
+        enabled: !!userSession.email
+    });
+
+    const { data: categories, refetch: refetchCategories } = useQuery({
+        queryKey: ['categories', userSession.email],
+        queryFn: () => getUserCategories(userSession.email),
         enabled: !!userSession.email
     });
 
@@ -64,7 +72,7 @@ export default function Dashboard() {
 
 
 
-    const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any) => {
+    const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any, category: string) => {
         e.preventDefault();
         if (!title.trim()) return;
 
@@ -77,7 +85,8 @@ export default function Dashboard() {
             body: JSON.stringify({
                 user_id: session?.id,
                 title: title,
-                description: description
+                description: description,
+                category_id: category
             }),
         });
 
@@ -154,7 +163,7 @@ export default function Dashboard() {
                                 <SelectGroup className="">
                                     <SelectLabel>Filtros</SelectLabel>
                                     <SelectItem className="cursor-pointer" value="all">
-                                        Todos
+                                        Status
                                     </SelectItem>
                                     <SelectItem className="cursor-pointer" value="done">
                                         Concluídos
@@ -162,6 +171,29 @@ export default function Dashboard() {
                                     <SelectItem className="cursor-pointer" value="not-done">
                                         Pendentes
                                     </SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div>
+                        <Select value={categoryFilter} onValueChange={(value) => setCategoryFilter(value)}>
+                            <SelectTrigger className="w-[180px] cursor-pointer">
+                                <Filter className="h-4 w-4 mr-2" />
+                                <SelectValue placeholder="Filtros" />
+                            </SelectTrigger>
+                            <SelectContent className="">
+                                <SelectGroup className="">
+                                    <SelectLabel>Categoria</SelectLabel>
+                                    <SelectItem className="cursor-pointer" value="all">
+                                        Categoria
+                                    </SelectItem>
+                                    {
+                                        categories?.map((category: Category) => (
+                                            <SelectItem className="cursor-pointer" key={category.id} value={String(category.id)}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))
+                                    }
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -230,6 +262,7 @@ export default function Dashboard() {
                 createTaskSubmit={handleCreateTask}
                 updateTaskSubmit={handleUpdateTask}
                 editingTask={editingTask}
+                categories={categories}
             />
         </div>
     );

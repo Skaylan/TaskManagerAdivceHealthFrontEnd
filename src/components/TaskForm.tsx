@@ -6,17 +6,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Save, X } from 'lucide-react';
 // import Cookies from 'js-cookie';
-import { useGetUserSession } from '@/actions/DashBoardActions';
+import { useGetUserSession, type Category } from '@/actions/DashBoardActions';
 import type { Task } from '@/pages/Dashborad';
+import { Select } from './ui/select';
+import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
 
 
 
 interface TaskFormProps {
     isOpen: boolean;
     onClose: () => void;
-    createTaskSubmit: (e: React.FormEvent, title: string, description: string, session: any) => void;
+    createTaskSubmit: (e: React.FormEvent, title: string, description: string, session: any, category: string) => void;
     updateTaskSubmit: (title: string, description: string, session: any) => void
-    editingTask: Task | null
+    editingTask: Task | null;
+    categories: Category[]
 }
 
 export const TaskForm = ({
@@ -24,12 +27,13 @@ export const TaskForm = ({
     onClose,
     createTaskSubmit,
     updateTaskSubmit,
-    editingTask
+    editingTask,
+    categories
 }: TaskFormProps) => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    // const [completed, setCompleted] = useState(false);
+    const [category, setCategory] = useState('');
     const session = useGetUserSession();
 
 
@@ -46,20 +50,20 @@ export const TaskForm = ({
             return
         }
 
-        createTaskSubmit(e, title, description, session);
+        createTaskSubmit(e, title, description, session, category);
     }
 
     useEffect(() => {
         if (editingTask) {
-          setTitle(editingTask.title);
-          setDescription(editingTask.description);
-        //   setCompleted(initialData.completed);
+            setTitle(editingTask.title);
+            setDescription(editingTask.description);
+            //   setCompleted(initialData.completed);
         } else {
-          setTitle('');
-          setDescription('');
-        //   setCompleted(false);
+            setTitle('');
+            setDescription('');
+            //   setCompleted(false);
         }
-      }, [editingTask, isOpen]);
+    }, [editingTask, isOpen]);
 
     return (
         <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -91,6 +95,29 @@ export const TaskForm = ({
                             placeholder="Enter task description..."
                             rows={3}
                         />
+                    </div>
+
+                    <div>
+                        <Select value={category} onValueChange={(value) => setCategory(value)}>
+                            <SelectTrigger className="w-[180px] cursor-pointer">
+                                <SelectValue placeholder="Categoria" />
+                            </SelectTrigger>
+                            <SelectContent className="">
+                                <SelectGroup className="">
+                                    <SelectLabel>Categoria</SelectLabel>
+                                    <SelectItem className="cursor-pointer" value="all">
+                                        Categoria
+                                    </SelectItem>
+                                    {
+                                        categories?.map((category: Category) => (
+                                            <SelectItem className="cursor-pointer" key={category.id} value={String(category.id)}>
+                                                {category.name}
+                                            </SelectItem>
+                                        ))
+                                    }
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <div className="flex gap-3 justify-end">
