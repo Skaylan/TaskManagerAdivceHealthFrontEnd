@@ -138,7 +138,7 @@ export default function Dashboard() {
                     <div className="flex-1 relative">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
-                            placeholder="Search tasks..."
+                            placeholder="Pesquisar..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="pl-10"
@@ -174,7 +174,7 @@ export default function Dashboard() {
                         className="cursor-pointer"
                     >
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Task
+                        Adicionar Tarefa
                     </Button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
