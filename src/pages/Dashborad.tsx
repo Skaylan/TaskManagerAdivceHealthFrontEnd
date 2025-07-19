@@ -38,22 +38,22 @@ export default function Dashboard() {
     const userSession = useGetUserSession();
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
-        queryKey: ['tasks', userSession.email, currentPage],
-        queryFn: () => getUserTasks(userSession.email, currentPage),
+        queryKey: ['tasks', userSession.email, currentPage, statusFilter, searchTerm],
+        queryFn: () => getUserTasks(userSession.email, currentPage, statusFilter, searchTerm),
         enabled: !!userSession.email
     });
 
     useEffect(() => {
         let filtered = tasks?.tasks;
         if (searchTerm) {
-            filtered = filtered.filter((task: Task) =>
+            filtered = filtered?.filter((task: Task) =>
                 task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 task.description.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
 
         if (statusFilter !== 'all') {
-            filtered = filtered.filter((task: Task) =>
+            filtered = filtered?.filter((task: Task) =>
                 statusFilter === 'done' ? task.is_done : !task.is_done
             );
         }

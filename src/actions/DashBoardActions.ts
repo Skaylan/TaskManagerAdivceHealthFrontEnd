@@ -9,9 +9,9 @@ export interface User {
     updated_at: Date;
 }
 
-export async function getUserTasks(email: string, pageNumber: number) {
+export async function getUserTasks(email: string, pageNumber: number, statusFilter?: string, searchTerm?: string) {
     const token = Cookies.get('token');
-    const response = await fetch(`http://localhost:8000/api/v1/get_tasks_by_user_email?email=${email}&page_number=${pageNumber}`, {
+    const response = await fetch(`http://localhost:8000/api/v1/get_tasks_by_user_email?email=${email}&page_number=${pageNumber}&filter=${statusFilter}&search_term=${searchTerm}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
