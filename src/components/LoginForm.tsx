@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label"
 import { DialogDescription } from "@radix-ui/react-dialog"
 import { LoginSchema } from "@/schemas/LoginSchema"
 import { ZodErrors } from "./zod/ZodErrors"
-import { callAuthenticationApiRoute } from "@/actions/LoginAction"
+import { callAuthenticationApiRoute } from "@/actions/authActions"
 import Cookies from "js-cookie"
 
 export function LoginForm() {
@@ -44,7 +44,7 @@ export function LoginForm() {
                 <Button className="cursor-pointer" variant="outline">Acesse sua conta</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                <form className="grid gap-4" onSubmit={(e) => {handleSubmit(e)}}>
+                <form className="grid gap-4" onSubmit={(e) => { handleSubmit(e) }}>
                     <DialogHeader>
                         <DialogTitle>Acesse sua conta</DialogTitle>
                     </DialogHeader>
