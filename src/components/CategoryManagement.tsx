@@ -12,12 +12,13 @@ import { Label } from "@/components/ui/label"
 import { DialogDescription } from "@radix-ui/react-dialog"
 import Cookies from "js-cookie"
 import { Edit, Plus, Save, Trash2, X } from "lucide-react"
-import { useGetUserSession, type Category } from "@/actions/DashBoardActions"
+import { useGetUserSession } from "@/actions/DashBoardActions"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog"
+import type { Category } from "@/types"
 
 
-export interface CategoryManagementProps {
+interface CategoryManagementProps {
     categories: Category[],
     refetchCategories: () => void,
     refetchTasks: () => void

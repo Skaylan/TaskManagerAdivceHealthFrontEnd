@@ -6,10 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Save, X } from 'lucide-react';
 // import Cookies from 'js-cookie';
-import { useGetUserSession, type Category } from '@/actions/DashBoardActions';
-import type { Task } from '@/pages/Dashborad';
+import { useGetUserSession } from '@/actions/DashBoardActions';
 import { Select } from './ui/select';
 import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
+import type { Category, Task } from '@/types';
 
 
 

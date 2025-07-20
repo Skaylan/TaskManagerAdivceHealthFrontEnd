@@ -2,10 +2,10 @@ import { CheckCircle, Circle, Edit, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
-import type { Task } from "@/pages/Dashborad";
+import type { Task } from "@/types";
 
 
-export interface TaskCardProps {
+interface TaskCardProps {
     task: Task;
     refetchTasks: () => void
     handleEditTask: (task: Task) => void

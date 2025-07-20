@@ -1,5 +1,5 @@
 // import { useGetUserInfo } from "@/actions/DashBoardActions";
-import { getUserCategories, getUserTasks, useGetUserSession, type Category } from "@/actions/DashBoardActions";
+import { getUserCategories, getUserTasks, useGetUserSession } from "@/actions/DashBoardActions";
 import { CategoryManagement } from "@/components/CategoryManagement";
 import { Header } from "@/components/Header";
 import { TaskCard } from "@/components/TaskCard";
@@ -7,6 +7,7 @@ import { TaskForm } from "@/components/TaskForm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Category, Task } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import {
@@ -20,16 +21,6 @@ import {
 import { useEffect, useState } from "react";
 
 
-
-export interface Task {
-    id: number;
-    title: string;
-    description: string;
-    is_done: boolean;
-    category: Category;
-    created_at: string;
-    updated_at: string
-}
 export default function Dashboard() {
     const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | null>(null);

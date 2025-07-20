@@ -1,9 +1,7 @@
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Clock, ListTodo } from "lucide-react";
-// import { Button } from "@/components/ui/button";
 
 export default function Index() {
     return (
@@ -22,10 +20,6 @@ export default function Index() {
                         <span className="text-gray-600">ou</span>
                         <RegisterForm />
                     </div>
-
-                    {/* <Button className="mt-4 px-6 py-2 text-base" size="lg">
-                        Comece agora
-                    </Button> */}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
@@ -55,10 +49,5 @@ export default function Index() {
                 </div>
             </section>
         </main>
-        // <div className="w-full h-[100vh] flex items-center justify-center">
-        //     <LoginForm />
-        //     <span>ou</span>
-        //     <RegisterForm />
-        // </div>
     );
 }
