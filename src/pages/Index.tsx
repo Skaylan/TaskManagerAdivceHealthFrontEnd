@@ -1,9 +1,19 @@
+import { useGetUserSession } from "@/actions/DashBoardActions";
 import { LoginForm } from "@/components/LoginForm";
 import { RegisterForm } from "@/components/RegisterForm";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Clock, ListTodo } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Index() {
+
+    const session = useGetUserSession();
+
+    useEffect(() => {
+        if (session) {
+            window.location.href = "/dashboard";
+        }
+    })
     return (
         <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-slate-50 to-slate-200 px-4">
             <section className="max-w-3xl text-center space-y-6">
