@@ -16,7 +16,7 @@ import { useGetUserSession } from "@/actions/DashBoardActions"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog"
 import type { Category } from "@/types"
-
+import { toast } from 'react-toastify';
 
 interface CategoryManagementProps {
     categories: Category[],
@@ -32,75 +32,90 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
     const colors = ['#8B5CF6', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#EC4899', '#6366F1'];
     const session = useGetUserSession();
 
-    const handleCreate = async () => {
+    const handleCreateCategoryForm = async () => {
         if (!formData.name.trim()) {
             return;
         }
 
-        const response = await fetch(process.env.BACKEND_URL + "/create_category", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get('token')}`
-            },
-            body: JSON.stringify({
-                email: session?.email,
-                name: formData.name,
-                color: formData.color
-            }),
-        });
+        try {
+            const response = await fetch(process.env.BACKEND_URL + "/create_category", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    email: session?.email,
+                    name: formData.name,
+                    color: formData.color
+                }),
+            });
 
-        if (response.ok) {
-            refetchCategories();
+            if (response.ok) {
+                refetchCategories();
+                toast.success('Categoria criada com sucesso!');
+            }
+
+            setFormData({ name: '', color: '#8B5CF6' });
+            setShowForm(false);
+        } catch (error) {
+            toast.error('Erro ao criar categoria');
         }
-
-        setFormData({ name: '', color: '#8B5CF6' });
-        setShowForm(false);
     }
 
-    const handleUpdate = async () => {
+    const handleUpdateCategoryForm = async () => {
         if (!editingCategory || !formData.name.trim()) {
             return;
         }
+        try {
+            const response = await fetch(process.env.BACKEND_URL + "/update_category", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    category_id: editingCategory.id,
+                    name: formData.name,
+                    color: formData.color
+                }),
+            });
 
-        const response = await fetch(process.env.BACKEND_URL + "/update_category", {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get('token')}`
-            },
-            body: JSON.stringify({
-                category_id: editingCategory.id,
-                name: formData.name,
-                color: formData.color
-            }),
-        });
+            if (response.ok) {
+                refetchCategories();
+                refetchTasks();
+                toast.success('Categoria atualizada com sucesso!');
+            }
 
-        if (response.ok) {
-            refetchCategories();
-            refetchTasks();
+            setEditingCategory(null);
+            setFormData({ name: '', color: '#8B5CF6' });
+            setShowForm(false);
+
+        } catch (error) {
+            toast.error('Erro ao atualizar categoria');
         }
-
-        setEditingCategory(null);
-        setFormData({ name: '', color: '#8B5CF6' });
-        setShowForm(false);
     };
 
-    const handleDelete = async (categoryId: string) => {
-        const response = await fetch(process.env.BACKEND_URL + "/delete_category", {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get('token')}`
-            },
-            body: JSON.stringify({
-                category_id: categoryId,
-            }),
+    const handleDeleteCategoryButton = async (categoryId: string) => {
+        try {
+            const response = await fetch(process.env.BACKEND_URL + "/delete_category", {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    category_id: categoryId,
+                }),
 
-        });
+            });
 
-        if (response.ok) {
-            refetchCategories();
+            if (response.ok) {
+                refetchCategories();
+                toast.success('Categoria deletada com sucesso!');
+            }
+        } catch (error) {
+            toast.error('Erro ao deletar categoria');
         }
     };
 
@@ -175,7 +190,7 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(String(category.id))} >
+                                                        <AlertDialogAction onClick={() => handleDeleteCategoryButton(String(category.id))} >
                                                             Delete
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
@@ -228,7 +243,7 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
                                         Cancelar
                                     </Button>
                                     <Button
-                                        onClick={editingCategory ? handleUpdate : handleCreate}
+                                        onClick={editingCategory ? handleUpdateCategoryForm : handleCreateCategoryForm}
                                         className="gap-2"
                                     >
                                         <Save className="h-4 w-4" />

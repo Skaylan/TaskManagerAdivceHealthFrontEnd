@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
 import type { Task } from "@/types";
-
+import { toast } from 'react-toastify';
 
 interface TaskCardProps {
     task: Task;
@@ -29,7 +29,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
                 refetchTasks();
             }
         } catch (error) {
-            console.error('Erro ao marcar a tarefa como concluida:', error);
+            toast.error('Erro ao atualizar a tarefa');
         }
     }
 
@@ -46,9 +46,10 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
             });
             if (response.ok) {
                 refetchTasks();
+                toast.success('Tarefa deletada com sucesso!');
             }
         } catch (error) {
-            console.error('Erro ao deletar a tarefa:', error);
+            toast.error('Erro ao deletar a tarefa');
         }
     }
 
@@ -95,7 +96,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
                 <div className="mt-2">
                     {
                         task?.category && (
-                            <Badge style={{ backgroundColor: task?.category.color }}  className="min-h-6 flex items-center justify-center text-white" key={task?.category.id}>{task?.category.name}</Badge>
+                            <Badge style={{ backgroundColor: task?.category.color }} className="min-h-6 flex items-center justify-center text-white" key={task?.category.id}>{task?.category.name}</Badge>
                         )
                     }
                 </div>
