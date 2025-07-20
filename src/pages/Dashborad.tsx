@@ -37,9 +37,9 @@ export default function Dashboard() {
     const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
     const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'not-done'>('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
-    const [tasksPerPage, setTasksPerPage] = useState(6);
     const [currentPage, setCurrentPage] = useState(1);
     const userSession = useGetUserSession();
+    let tasksPerPage = 6;
 
     const { data: tasks, refetch: refetchTasks } = useQuery({
         queryKey: ['tasks', userSession.email, currentPage, statusFilter, searchTerm, categoryFilter],
