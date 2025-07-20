@@ -168,9 +168,9 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle>Delete Category</AlertDialogTitle>
+                                                        <AlertDialogTitle>Exclusão de categoria</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            Are you sure you want to delete "{category.name}"? This action cannot be undone.
+                                                            Tem certeza que deseja excluir a categoria "{category.name}"? Esta ação não pode ser desfeita.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
@@ -191,17 +191,17 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
                         <Card className="">
                             <CardHeader>
                                 <CardTitle className="text-lg">
-                                    {editingCategory ? 'Edit Category' : 'Create Category'}
+                                    {editingCategory ? 'Edite a Categoria' : 'Crie uma Nova Categoria'}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div>
-                                    <Label htmlFor="categoryName">Category Name</Label>
+                                    <Label htmlFor="categoryName">Nome da Categoria</Label>
                                     <Input
                                         id="categoryName"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        placeholder="Enter category name"
+                                        placeholder="Digite o nome da categoria"
                                         className="mt-1"
                                     />
                                 </div>
@@ -225,14 +225,14 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
                                 <div className="flex gap-2 pt-4">
                                     <Button onClick={closeForm} variant="outline" className="gap-2">
                                         <X className="h-4 w-4" />
-                                        Cancel
+                                        Cancelar
                                     </Button>
                                     <Button
                                         onClick={editingCategory ? handleUpdate : handleCreate}
                                         className="gap-2"
                                     >
                                         <Save className="h-4 w-4" />
-                                        {editingCategory ? 'Update' : 'Create'}
+                                        {editingCategory ? 'Atualizar' : 'Criar'}
                                     </Button>
                                 </div>
                             </CardContent>
