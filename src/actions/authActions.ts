@@ -1,5 +1,5 @@
 export async function callCreateUserApiRoute(name: string, email: string, password: string, confirmPassword: string) {
-    const response = await fetch('http://localhost:8000/api/v1/create_user', {
+    const response = await fetch(process.env.BACKEND_URL + '/create_user', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export async function callCreateUserApiRoute(name: string, email: string, passwo
 
 
 export async function callAuthenticationApiRoute(email: string, password: string) {
-    const response = await fetch('http://localhost:8000/api/v1/authenticate', {
+    const response = await fetch(process.env.BACKEND_URL + '/authenticate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

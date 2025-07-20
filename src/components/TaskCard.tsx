@@ -15,7 +15,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
 
     const handleToggleComplete = async (taskId: number) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/update_task_status`, {
+            const response = await fetch(process.env.BACKEND_URL + `/update_task_status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -35,7 +35,7 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
 
     const handleDeleteTask = async (taskId: number) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/delete_task`, {
+            const response = await fetch(process.env.BACKEND_URL + `/delete_task`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

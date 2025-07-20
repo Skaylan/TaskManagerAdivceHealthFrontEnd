@@ -12,12 +12,15 @@ Para rodar a aplicação, execute os seguintes comandos:
 
 1. Clone o repositório e navegue até a pasta do projeto.
 
+2. Adicione o arquivo .env com a variável de ambiente BACKEND_URL com o endereço do backend (http://localhost:8000).
+
 ### O projeto foi desenvolvido utilizando o gerenciador de pacotes pnpm.
 
 1. Instale as dependências do projeto com o comando:
 ```bash
 pnpm install
 ```
+
 
 2. Inicie o servidor de desenvolvimento com o comando:
 ```bash

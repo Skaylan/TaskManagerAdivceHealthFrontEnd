@@ -36,7 +36,7 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
             return;
         }
 
-        const response = await fetch("http://localhost:8000/api/v1/create_category", {
+        const response = await fetch(process.env.BACKEND_URL + "/create_category", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
             return;
         }
 
-        const response = await fetch("http://localhost:8000/api/v1/update_category", {
+        const response = await fetch(process.env.BACKEND_URL + "/update_category", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ export function CategoryManagement({ categories, refetchCategories, refetchTasks
     };
 
     const handleDelete = async (categoryId: string) => {
-        const response = await fetch("http://localhost:8000/api/v1/delete_category", {
+        const response = await fetch(process.env.BACKEND_URL + "/delete_category", {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

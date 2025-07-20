@@ -82,7 +82,7 @@ export default function Dashboard() {
             category = '';
         }
 
-        const response = await fetch('http://localhost:8000/api/v1/add_task', {
+        const response = await fetch(process.env.BACKEND_URL + '/add_task', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export default function Dashboard() {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/api/v1/update_task_infos`, {
+            const response = await fetch(process.env.BACKEND_URL + `/update_task_infos`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
