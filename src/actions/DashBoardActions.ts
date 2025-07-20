@@ -12,6 +12,7 @@ export interface User {
 export interface Category {
     id: number;
     name: string;
+    color: string;
     created_at: Date;
     updated_at: Date;
 }

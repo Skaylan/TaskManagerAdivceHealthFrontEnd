@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
 import type { Task } from "@/pages/Dashborad";
-import type { Category } from "@/actions/DashBoardActions";
 
 
 export interface TaskCardProps {
@@ -95,10 +94,9 @@ export function TaskCard({ task, refetchTasks, handleEditTask }: TaskCardProps) 
                 </div>
                 <div className="mt-2">
                     {
-                        task.category.map((category: Category) => (
-                            <Badge className="min-h-6 flex items-center justify-center bg-blue-500 text-white" key={category.id}>{category.name}</Badge>
-
-                        ))
+                        task?.category && (
+                            <Badge style={{ backgroundColor: task?.category.color }}  className="min-h-6 flex items-center justify-center text-white" key={task?.category.id}>{task?.category.name}</Badge>
+                        )
                     }
                 </div>
             </CardHeader>

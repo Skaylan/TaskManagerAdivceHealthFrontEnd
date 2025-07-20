@@ -33,7 +33,7 @@ export const TaskForm = ({
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [category, setCategory] = useState('');
+    const [category, setCategory] = useState('all');
     const session = useGetUserSession();
 
 

@@ -1,5 +1,6 @@
 // import { useGetUserInfo } from "@/actions/DashBoardActions";
 import { getUserCategories, getUserTasks, useGetUserSession, type Category } from "@/actions/DashBoardActions";
+import { CategoryManagement } from "@/components/CategoryManagement";
 import { Header } from "@/components/Header";
 import { TaskCard } from "@/components/TaskCard";
 import { TaskForm } from "@/components/TaskForm";
@@ -14,6 +15,7 @@ import {
     Filter,
     ChevronRight,
     ChevronLeft,
+    ChartColumnStacked,
 } from 'lucide-react';
 import { useEffect, useState } from "react";
 
@@ -24,7 +26,7 @@ export interface Task {
     title: string;
     description: string;
     is_done: boolean;
-    category: Category[];
+    category: Category;
     created_at: string;
     updated_at: string
 }
@@ -75,6 +77,10 @@ export default function Dashboard() {
     const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any, category: string) => {
         e.preventDefault();
         if (!title.trim()) return;
+
+        if (category === 'all') {
+            category = '';
+        }
 
         const response = await fetch('http://localhost:8000/api/v1/add_task', {
             method: 'POST',
@@ -178,7 +184,7 @@ export default function Dashboard() {
                     <div>
                         <Select value={categoryFilter} onValueChange={(value) => setCategoryFilter(value)}>
                             <SelectTrigger className="w-[180px] cursor-pointer">
-                                <Filter className="h-4 w-4 mr-2" />
+                                <ChartColumnStacked  className="h-4 w-4 mr-2" />
                                 <SelectValue placeholder="Filtros" />
                             </SelectTrigger>
                             <SelectContent className="">
@@ -198,7 +204,9 @@ export default function Dashboard() {
                             </SelectContent>
                         </Select>
                     </div>
-
+                    <div className="">
+                        <CategoryManagement refetchTasks={refetchTasks}  categories={categories} refetchCategories={refetchCategories} />
+                    </div>
 
                     <Button
 
