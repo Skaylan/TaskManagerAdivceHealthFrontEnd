@@ -17,7 +17,7 @@ interface TaskFormProps {
     isOpen: boolean;
     onClose: () => void;
     createTaskSubmit: (e: React.FormEvent, title: string, description: string, session: any, category: string) => void;
-    updateTaskSubmit: (title: string, description: string, session: any) => void
+    updateTaskSubmit: (title: string, description: string, categoryId: string) => void
     editingTask: Task | null;
     categories: Category[]
 }
@@ -40,13 +40,12 @@ export const TaskForm = ({
     const handleClose = () => {
         setTitle('');
         setDescription('');
-        // setCompleted(false);
         onClose();
     };
 
     const handleSubmit = async (e: React.FormEvent, title: string, description: string, session: any) => {
         if (editingTask) {
-            updateTaskSubmit(title, description, session);
+            updateTaskSubmit(title, description, category);
             return
         }
 
@@ -135,7 +134,7 @@ export const TaskForm = ({
                             className="cursor-pointer hover:opacity-90"
                         >
                             <Save className="h-4 w-4 mr-2" />
-                            Criar
+                            {editingTask ? 'Salvar' : 'Criar'}
                         </Button>
                     </div>
                 </form>

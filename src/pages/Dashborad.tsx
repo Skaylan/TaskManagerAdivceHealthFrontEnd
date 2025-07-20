@@ -112,8 +112,12 @@ export default function Dashboard() {
     };
 
 
-    const handleUpdateTask = async (title: string, description: string) => {
+    const handleUpdateTask = async (title: string, description: string, categoryId: string) => {
         if (!editingTask) return;
+
+        if (categoryId === 'all') {
+            categoryId = '';
+        }
 
         try {
             const response = await fetch(`http://localhost:8000/api/v1/update_task_infos`, {
@@ -125,7 +129,8 @@ export default function Dashboard() {
                 body: JSON.stringify({
                     task_id: editingTask.id,
                     title: title,
-                    description: description
+                    description: description,
+                    category_id: categoryId
                 }),
             })
 
