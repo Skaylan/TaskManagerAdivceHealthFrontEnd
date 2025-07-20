@@ -1,3 +1,5 @@
+import Cookies from "js-cookie";
+
 export async function callCreateUserApiRoute(name: string, email: string, password: string, confirmPassword: string) {
     const response = await fetch(process.env.BACKEND_URL + '/create_user', {
         method: 'POST',
@@ -26,4 +28,11 @@ export async function callAuthenticationApiRoute(email: string, password: string
     });
     const data = await response.json();
     return data
+}
+
+
+export function logOut() {
+    Cookies.remove("token");
+    Cookies.remove("session");
+    window.location.href = "/";
 }

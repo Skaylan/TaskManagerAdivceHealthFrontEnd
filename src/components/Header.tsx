@@ -1,13 +1,7 @@
 import { LogOut } from "lucide-react";
 import { Button } from "./ui/button";
-import Cookies from "js-cookie";
+import { logOut } from "@/actions/authActions";
 export function Header() {
-
-    const logOut = () => {
-        Cookies.remove("token");
-        Cookies.remove("session");
-        window.location.href = "/";
-    }
 
     return (
         <header className="w-full flex p-8 justify-between">
