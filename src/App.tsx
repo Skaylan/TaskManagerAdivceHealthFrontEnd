@@ -6,6 +6,7 @@ import Index from './pages/Index';
 import NotFound from './pages/NotFound';
 import { PrivateRoute } from './components/PrivateRoute';
 import Dashboard from './pages/Dashborad';
+import { ToastContainer } from 'react-toastify';
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,7 @@ const App = () => (
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
+            <ToastContainer />
           </PrivateRoute>
         } />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

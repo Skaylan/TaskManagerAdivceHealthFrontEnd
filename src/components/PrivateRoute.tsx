@@ -6,7 +6,6 @@ interface PrivateRouteProps {
 }
 
 export const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  // const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
   const token = Cookies.get('token');
 
   const isAuthenticated = !!token;

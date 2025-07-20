@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import type { Category, Task } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import { toast } from 'react-toastify';
 import {
     Plus,
     Search,
@@ -63,8 +64,6 @@ export default function Dashboard() {
     }, [tasks, searchTerm, statusFilter]);
 
 
-
-
     const handleCreateTask = async (e: React.FormEvent, title: string, description: string, session: any, category: string) => {
         e.preventDefault();
         if (!title.trim()) return;
@@ -73,29 +72,32 @@ export default function Dashboard() {
             category = '';
         }
 
-        const response = await fetch(process.env.BACKEND_URL + '/add_task', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${Cookies.get('token')}`
-            },
-            body: JSON.stringify({
-                user_id: session?.id,
-                title: title,
-                description: description,
-                category_id: category
-            }),
-        });
+        try {
+            const response = await fetch(process.env.BACKEND_URL + '/add_task', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${Cookies.get('token')}`
+                },
+                body: JSON.stringify({
+                    user_id: session?.id,
+                    title: title,
+                    description: description,
+                    category_id: category
+                }),
+            });
 
-        if (response.ok) {
-            console.log('Task created successfully');
-            refetchTasks();
-            setIsTaskFormOpen(false);
-        } else {
-            console.error('Failed to create task');
+            if (response.ok) {
+                refetchTasks();
+                setIsTaskFormOpen(false);
+                toast.success('Tarefa criada com sucesso!');
+            }
+
+        } catch (error) {
+            toast.error('Erro ao criar tarefa');
+            return;
         }
 
-        // Reset form
     };
 
     const handleEditTask = (task: Task) => {
@@ -127,13 +129,13 @@ export default function Dashboard() {
             })
 
             if (response.ok) {
-                console.log('Task updated successfully');
                 refetchTasks();
                 setEditingTask(null);
+                toast.success('Tarefa atualizada com sucesso!');
             }
 
         } catch (error) {
-            console.error('Error updating task:', error);
+            toast.error('Erro ao atualizar tarefa');
         }
 
     };
