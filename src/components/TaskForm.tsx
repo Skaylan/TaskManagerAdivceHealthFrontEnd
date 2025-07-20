@@ -43,7 +43,7 @@ export const TaskForm = ({
         onClose();
     };
 
-    const handleSubmit = async (e: React.FormEvent, title: string, description: string, session: any) => {
+    const handleTaskFormSubmit = async (e: React.FormEvent, title: string, description: string, session: any) => {
         if (editingTask) {
             updateTaskSubmit(title, description, category);
             return
@@ -73,7 +73,7 @@ export const TaskForm = ({
                     </DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={(e) => handleSubmit(e, title, description, session)} className="space-y-6">
+                <form onSubmit={(e) => handleTaskFormSubmit(e, title, description, session)} className="space-y-6">
                     <div className="space-y-2">
                         <Label htmlFor="title">Task Title</Label>
                         <Input

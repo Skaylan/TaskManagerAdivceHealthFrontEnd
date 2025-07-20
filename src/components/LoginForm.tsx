@@ -22,7 +22,7 @@ export function LoginForm() {
     const [password, setPassword] = useState('')
     const [zodErrors, setZodErrors] = useState<string[]>([])
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLoginFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const data = LoginSchema.safeParse({ email, password })
         if (!data.success) {
@@ -44,7 +44,7 @@ export function LoginForm() {
                 <Button className="cursor-pointer" variant="outline">Acesse sua conta</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-                <form className="grid gap-4" onSubmit={(e) => { handleSubmit(e) }}>
+                <form className="grid gap-4" onSubmit={(e) => { handleLoginFormSubmit(e) }}>
                     <DialogHeader>
                         <DialogTitle>Acesse sua conta</DialogTitle>
                     </DialogHeader>

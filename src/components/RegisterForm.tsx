@@ -24,7 +24,7 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [zodErrors, setZodErrors] = useState<string[]>([])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log(name, email, password, confirmPassword)
     const data = registerSchema.safeParse({ name, email, password, confirmPassword })
@@ -48,7 +48,7 @@ export function RegisterForm() {
           <Button className="cursor-pointer" variant="outline">Crie uma conta</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
-          <form onSubmit={(e) => { handleSubmit(e) }}>
+          <form onSubmit={(e) => { handleRegisterFormSubmit(e) }}>
               <DialogHeader>
                 <DialogTitle>Crie uma conta</DialogTitle>
                 <DialogDescription>
