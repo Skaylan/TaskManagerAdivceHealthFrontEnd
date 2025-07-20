@@ -77,7 +77,7 @@ export function RegisterForm() {
                   {/* <ZodErrors error={zodErrors.filter(err => err.includes('senhas'))} /> */}
                 </div>
               </div>
-              <DialogFooter>
+              <DialogFooter className="mt-2">
                 <DialogClose asChild>
                   <Button className="cursor-pointer" variant="outline">Cancelar</Button>
                 </DialogClose>
