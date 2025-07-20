@@ -97,6 +97,7 @@ export default function Dashboard() {
 
         // Reset form
     };
+
     const handleEditTask = (task: Task) => {
         setEditingTask(task);
         setIsTaskFormOpen(true);
@@ -136,6 +137,7 @@ export default function Dashboard() {
         }
 
     };
+
     const currentTasks = filteredTasks;
     const totalPages = Math.ceil(tasks?.amount_of_tasks / tasksPerPage);
 
