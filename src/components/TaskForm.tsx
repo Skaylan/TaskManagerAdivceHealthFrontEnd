@@ -80,7 +80,7 @@ export const TaskForm = ({
                             id="title"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            placeholder="Enter task title..."
+                            placeholder="Digite o titulo da tarefa..."
                             required
                         />
                     </div>
@@ -91,7 +91,7 @@ export const TaskForm = ({
                             id="description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder="Enter task description..."
+                            placeholder="Digite a descrição da tarefa..."
                             rows={3}
                         />
                     </div>
