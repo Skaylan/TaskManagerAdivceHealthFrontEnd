@@ -49,7 +49,7 @@ export function LoginForm() {
                         <DialogTitle>Acesse sua conta</DialogTitle>
                     </DialogHeader>
                     <DialogDescription>
-                        Crie uma conte começe a utilizar todos os recursos do site
+                        Crie uma conta começe a utilizar todos os recursos do site
                     </DialogDescription>
                     <div className="grid gap-4">
                         <div className="grid gap-3">
